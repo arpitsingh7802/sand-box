@@ -10,14 +10,30 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strict": false,
     "paths": {
-      "@sand-box/core-ui": ["./libs/core-ui/src/index.ts"],
-      "@sand-box/shared-data": ["./libs/shared-data/src/index.ts"]
+      "@sand-box/ui": [
+        "./libs/shared/ui/src/index.ts"
+      ],
+      "@sand-box/data-access": [
+        "./libs/shared/data-access/src/index.ts"
+      ],
+      "@sand-box/util": [
+        "./libs/shared/util/src/index.ts"
+      ],
+      "@sand-box/types": [
+        "./libs/shared/types/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
