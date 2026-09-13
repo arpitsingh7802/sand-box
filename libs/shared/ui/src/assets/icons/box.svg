@@ -1,0 +1,38 @@
+<svg viewBox="12 5 50 50" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="nav-cyan" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0052D4" />
+      <stop offset="50%" stop-color="#4364F7" />
+      <stop offset="100%" stop-color="#6FB1FC" />
+    </linearGradient>
+
+    <linearGradient id="nav-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6100FF" />
+      <stop offset="100%" stop-color="#B800FF" />
+    </linearGradient>
+
+    <linearGradient id="nav-orange" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF416C" />
+      <stop offset="100%" stop-color="#FF4B2B" />
+    </linearGradient>
+
+    <filter id="nav-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <g transform="translate(5, 2)">
+    <path d="M 32,32 L 12,21 L 12,41 L 32,52 Z" fill="url(#nav-cyan)" />
+    <path d="M 32,32 L 52,21 L 52,41 L 32,52 Z" fill="url(#nav-purple)" />
+    <path d="M 32,32 L 52,21 L 32,10 L 12,21 Z" fill="#1b1f29" stroke="#2a3142" stroke-width="1.5" />
+
+    <g transform="translate(0, -4)" filter="url(#nav-glow)">
+      <path d="M 32,15 L 38,12 L 32,9 L 26,12 Z" fill="#6FB1FC" opacity="0.9" />
+      <path d="M 32,15 L 26,12 L 26,17 L 32,20 Z" fill="#4364F7" />
+      <path d="M 32,15 L 38,12 L 38,17 L 32,20 Z" fill="#0052D4" />
+    </g>
+
+    <circle cx="43" cy="27" r="3.5" fill="url(#nav-orange)" filter="url(#nav-glow)" />
+  </g>
+</svg>

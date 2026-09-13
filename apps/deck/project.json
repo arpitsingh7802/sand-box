@@ -19,9 +19,27 @@
           {
             "glob": "**/*",
             "input": "apps/deck/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/ui/src/assets/icons",
+            "output": "assets/shared/icons"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/ui/src/assets/images",
+            "output": "assets/shared/images"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/ui/src/assets/fonts",
+            "output": "assets/shared/fonts"
           }
         ],
-        "styles": ["apps/deck/src/styles.scss"]
+        "styles": ["libs/shared/ui/src/scss/_init.scss", "apps/deck/src/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/shared/ui/src/scss"]
+        }
       },
       "configurations": {
         "production": {
