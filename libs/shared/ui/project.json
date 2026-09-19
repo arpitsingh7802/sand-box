@@ -4,7 +4,7 @@
   "sourceRoot": "libs/shared/ui/src",
   "prefix": "lib",
   "projectType": "library",
-  "tags": ["type:ui", "scope:shared"],
+  "tags": ["type:ui", "type:data-access", "type:util", "scope:shared"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"

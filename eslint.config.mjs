@@ -23,7 +23,7 @@ export default [
             },
             {
               sourceTag: 'type:ui',
-              onlyDependOnLibsWithTags: ['type:ui', 'type:util'],
+              onlyDependOnLibsWithTags: ['type:ui', 'type:data-access', 'type:util'],
             },
             {
               sourceTag: 'type:data-access',

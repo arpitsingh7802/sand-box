@@ -1,1 +1,1 @@
-export * from './lib/app-registry';
+export * from './lib/registry/app-registry';

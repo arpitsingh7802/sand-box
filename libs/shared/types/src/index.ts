@@ -1,1 +1,1 @@
-export * from './lib/app-manifest';
+export * from './lib/app/app-manifest';

@@ -1,0 +1,115 @@
+/* libs/shared/ui/src/scss/tailwind-entry.css */
+
+/* ---------------------------------------------------------------------------
+   Layer order declaration MUST be the first rule in the file.
+   CSS only allows @layer statements and @charset before @import.
+   This must match `cssLayer.order` in providePrimeNG exactly.
+--------------------------------------------------------------------------- */
+/* @layer base, primeng, tailwind-utilities; */
+@layer theme, base, primeng, components, utilities;
+
+@import 'tailwindcss';
+@plugin "tailwindcss-primeui";
+@source "../lib/";
+
+/* ---------------------------------------------------------------------------
+   Tailwind v4 has no tailwind.config.js. The `dark:` variant is redefined here
+   to key off the same class PrimeNG's darkModeSelector uses, so `dark:bg-*`
+   and PrimeNG's own dark tokens flip together.
+--------------------------------------------------------------------------- */
+/* @custom-variant dark (&:where(.p-dark, .p-dark *)); */
+@custom-variant dark (&:where(.p-dark, .p-dark *));
+
+/* ---------------------------------------------------------------------------
+   Canvas. PrimeNG themes components, not your document — the body background
+   is yours to set. surface-* utilities come from tailwindcss-primeui and
+   resolve against --p-surface-*, so they flip with the color scheme.
+--------------------------------------------------------------------------- */
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html.p-dark {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--p-surface-50);
+    color: var(--p-text-color);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html.p-dark body {
+    background-color: var(--p-surface-950);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Optional: custom scrollbars that follow the scheme. Remove if unwanted.
+--------------------------------------------------------------------------- */
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--p-surface-300) transparent;
+  }
+
+  html.p-dark * {
+    scrollbar-color: var(--p-surface-700) transparent;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Direct Bridge to PrimeNG CSS Variables in Tailwind Theme.
+--------------------------------------------------------------------------- */
+@theme {
+  /* Brand Primitives */
+  --color-brand-cyan-light: #6fb1fc;
+  --color-brand-cyan-mid: #4364f7;
+  --color-brand-cyan-dark: #0052d4;
+  --color-brand-purple-start: #6100ff;
+  --color-brand-purple-end: #b800ff;
+  --color-brand-orange-start: #ff416c;
+  --color-brand-orange-end: #ff4b2b;
+  --color-brand-surface-top: #1b1f29;
+  --color-brand-surface-stroke: #2a3142;
+
+  --color-primary: var(--p-primary-color);
+  --color-primary-hover: var(--p-primary-hover-color);
+  --color-primary-contrast: var(--p-primary-contrast-color);
+
+  --color-surface-0: var(--p-surface-0);
+  --color-surface-50: var(--p-surface-50);
+  --color-surface-100: var(--p-surface-100);
+  --color-surface-200: var(--p-surface-200);
+  --color-surface-300: var(--p-surface-300);
+  --color-surface-400: var(--p-surface-400);
+  --color-surface-500: var(--p-surface-500);
+  --color-surface-600: var(--p-surface-600);
+  --color-surface-700: var(--p-surface-700);
+  --color-surface-800: var(--p-surface-800);
+  --color-surface-900: var(--p-surface-900);
+  --color-surface-950: var(--p-surface-950);
+}
+
+/* ---------------------------------------------------------------------------
+    Custom Utilities.
+--------------------------------------------------------------------------- */
+
+@utility bg-gradient-nav-cyan {
+  background-image: linear-gradient(135deg, #0052d4 0%, #4364f7 50%, #6fb1fc 100%);
+}
+@utility bg-gradient-nav-purple {
+  background-image: linear-gradient(135deg, #6100ff 0%, #b800ff 100%);
+}
+@utility bg-gradient-nav-orange {
+  background-image: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+}
+@utility shadow-glow-cyan {
+  box-shadow: 0 0 15px rgba(111, 177, 252, 0.4);
+}
+@utility shadow-glow-orange {
+  box-shadow: 0 0 12px rgba(255, 75, 43, 0.5);
+}

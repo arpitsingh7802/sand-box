@@ -1,10 +1,12 @@
+@use 'primeicons/primeicons.css';
+
 /* --- INTER (BODY) --- */
 @font-face {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/assets/shared/fonts/inter-v18-latin-regular.woff2') format('woff2');
+  src: url('../assets/fonts/inter-v18-latin-regular.woff2') format('woff2');
 }
 
 @font-face {
@@ -12,7 +14,7 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/assets/shared/fonts/inter-v18-latin-600.woff2') format('woff2');
+  src: url('../assets/fonts/inter-v18-latin-600.woff2') format('woff2');
 }
 
 /* --- SPACE GROTESK (HEADINGS / BRAND) --- */
@@ -21,7 +23,7 @@
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/assets/shared/fonts/space-grotesk-v16-latin-600.woff2') format('woff2');
+  src: url('../assets/fonts/space-grotesk-v16-latin-600.woff2') format('woff2');
 }
 
 @font-face {
@@ -29,7 +31,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/assets/shared/fonts/space-grotesk-v16-latin-700.woff2') format('woff2');
+  src: url('../assets/fonts/space-grotesk-v16-latin-700.woff2') format('woff2');
 }
 
 /* --- DESIGN TOKENS & GLOBALS --- */

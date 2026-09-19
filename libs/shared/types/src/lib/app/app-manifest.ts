@@ -1,6 +1,5 @@
-// libs/types/src/lib/app-manifest.ts
-export type AppCategory = 'utility' | 'playground' | 'tool' | 'experimental';
-export type AppStatus = 'stable' | 'beta' | 'wip';
+import { AppCategory } from './app-category';
+import { AppStatus } from './app-status';
 
 export interface AppManifest {
   id: string;

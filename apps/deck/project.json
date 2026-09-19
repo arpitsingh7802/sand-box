@@ -22,21 +22,20 @@
           },
           {
             "glob": "**/*",
-            "input": "libs/ui/src/assets/icons",
-            "output": "assets/shared/icons"
+            "input": "libs/shared/ui/src/assets/icons",
+            "output": "shared/icons"
           },
           {
             "glob": "**/*",
-            "input": "libs/ui/src/assets/images",
-            "output": "assets/shared/images"
-          },
-          {
-            "glob": "**/*",
-            "input": "libs/ui/src/assets/fonts",
-            "output": "assets/shared/fonts"
+            "input": "libs/shared/ui/src/assets/images",
+            "output": "shared/images"
           }
         ],
-        "styles": ["libs/shared/ui/src/scss/_init.scss", "apps/deck/src/styles.scss"],
+        "styles": [
+          "libs/shared/ui/src/css/tailwind-entry.css",
+          "libs/shared/ui/src/scss/_init.scss",
+          "apps/deck/src/styles.scss"
+        ],
         "stylePreprocessorOptions": {
           "includePaths": ["libs/shared/ui/src/scss"]
         }

@@ -1,0 +1,72 @@
+<lib-header></lib-header>
+<div class="dashboard">
+  <!-- Header / Hero Section -->
+  <header class="dashboard_hero">
+    <p-tag
+      value="SANDBOX CONTROL CENTER"
+      [rounded]="true"
+      severity="info"
+      class="dashboard_badge"
+    />
+    <h1>Pick a Tool. Start Experimenting.</h1>
+    <p>A playground for modern web utilities, canvas experiments, and Angular concepts.</p>
+
+    <!-- Controls Toolbar -->
+    <div class="dashboard_controls">
+      <!-- Search Input -->
+      <span class="p-input-icon-left dashboard_search">
+        <input
+          pInputText
+          type="text"
+          placeholder="Search tools or tags..."
+          [(ngModel)]="searchQuery"
+        />
+      </span>
+
+      <!-- Category Filter -->
+      <p-selectbutton
+        [options]="categoryOptions"
+        [(ngModel)]="selectedCategory"
+        optionLabel="label"
+        optionValue="value"
+      />
+    </div>
+  </header>
+
+  <!-- Grid Layout -->
+  <div class="dashboard_grid">
+    @for (app of filteredApps(); track app.id) {
+      <p-card class="app-card" [style]="{ '--accent-color': app.accentColor }">
+        <ng-template pTemplate="header">
+          <div class="app-card_header">
+            <span class="app-card_icon">{{ app.icon }}</span>
+            <p-tag [value]="app.status" [severity]="getSeverity(app.status)" />
+          </div>
+        </ng-template>
+
+        <div class="app-card_body">
+          <h2 class="app-card_title">{{ app.name }}</h2>
+          <p class="app-card_description">{{ app.tagline }}</p>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <div class="app-card_footer">
+            <div class="app-card_tags">
+              @for (tag of app.tags; track tag) {
+                <span class="app-card_tag">#{{ tag }}</span>
+              }
+            </div>
+            <a [href]="app.path" class="app-card_link">
+              <p-button label="Launch" icon="pi pi-external-link" [link]="true" />
+            </a>
+          </div>
+        </ng-template>
+      </p-card>
+    } @empty {
+      <div class="dashboard_empty">
+        <i class="pi pi-search" style="font-size: 2rem"></i>
+        <p>No tools match your filter request.</p>
+      </div>
+    }
+  </div>
+</div>

@@ -1,9 +1,6 @@
-import {
-  ApplicationConfig,
-  provideBrowserGlobalErrorListeners,
-} from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withHashLocation } from '@angular/router';
-import Aura from '@primeuix/themes/aura';
+import { SandboxPreset } from '@sand-box/ui';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
 
@@ -13,10 +10,14 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes, withHashLocation()),
     providePrimeNG({
       theme: {
-        preset: Aura,
-        options:{
+        preset: SandboxPreset,
+        options: {
           prefix: 'p',
-          darkModeSelector: 'system',
+          darkModeSelector: '.p-dark',
+          cssLayer: {
+            name: 'primeng',
+            order: 'base, primeng, tailwind-utilities',
+          },
         },
       },
       ripple: true,

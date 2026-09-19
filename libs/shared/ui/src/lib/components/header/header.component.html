@@ -1,0 +1,41 @@
+<header
+  class="w-full fixed top-0 left-0 z-50 flex items-center justify-between border-b border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-950 px-6 py-3 transition-colors duration-200"
+>
+  <!-- Left Side: Sidebar Toggle -->
+  <div class="flex items-center">
+    <!-- <button
+      type="button"
+      pButton
+      [text]="true"
+      [rounded]="true"
+      severity="secondary"
+      aria-label="Toggle Navigation Sidebar"
+      class="!p-2 text-surface-600 dark:text-surface-300 hover:text-surface-900 dark:hover:text-surface-0 transition-colors"
+    >
+      <i class="pi pi-angle-double-right text-xl"></i>
+    </button> -->
+  </div>
+
+  <!-- Right Side: Dark Mode Toggle & Logo -->
+  <div class="flex items-center gap-4">
+    <button
+      type="button"
+      pButton
+      [text]="true"
+      [rounded]="true"
+      (click)="themeService.toggleDarkMode()"
+      severity="secondary"
+      aria-label="Toggle Theme"
+      class="!p-2 text-surface-600 dark:text-surface-300 hover:text-primary transition-colors"
+    >
+      <i
+        class="pi text-xl"
+        [class.pi-moon]="themeService.isDarkMode()"
+        [class.pi-sun]="!themeService.isDarkMode()"
+      ></i>
+    </button>
+    <a routerLink="/" class="flex items-center rounded-lg transition-opacity hover:opacity-90">
+      <img src="shared/icons/sand-box.svg" alt="sand-box" class="h-9 w-auto" />
+    </a>
+  </div>
+</header>

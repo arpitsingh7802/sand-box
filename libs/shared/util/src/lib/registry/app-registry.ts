@@ -1,4 +1,3 @@
-// libs/util/src/lib/app-registry.ts
 import { AppManifest } from '@sand-box/types';
 
 export const ALL_APPS: AppManifest[] = [
