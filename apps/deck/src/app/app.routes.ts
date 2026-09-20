@@ -11,4 +11,9 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./pages/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
+  {
+    path: 'board',
+    loadComponent: () =>
+      import('@sand-box/whiteboard-feature-board').then((m) => m.WhiteboardComponent),
+  },
 ];

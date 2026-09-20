@@ -10,30 +10,19 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strict": false,
     "paths": {
-      "@sand-box/ui": [
-        "./libs/shared/ui/src/index.ts"
-      ],
-      "@sand-box/data-access": [
-        "./libs/shared/data-access/src/index.ts"
-      ],
-      "@sand-box/util": [
-        "./libs/shared/util/src/index.ts"
-      ],
-      "@sand-box/types": [
-        "./libs/shared/types/src/index.ts"
-      ]
+      "@sand-box/ui": ["./libs/shared/ui/src/index.ts"],
+      "@sand-box/data-access": ["./libs/shared/data-access/src/index.ts"],
+      "@sand-box/util": ["./libs/shared/util/src/index.ts"],
+      "@sand-box/types": ["./libs/shared/types/src/index.ts"],
+      "@sand-box/whiteboard-feature-board": ["./libs/whiteboard/feature-board/src/index.ts"],
+      "@sand-box/whiteboard-domain": ["./libs/whiteboard/domain/src/index.ts"],
+      "@sand-box/whiteboard-data-access": ["./libs/whiteboard/data-access/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

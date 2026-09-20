@@ -1,0 +1,13 @@
+{
+  "name": "whiteboard-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/whiteboard/data-access/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:whiteboard", "type:data-access"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

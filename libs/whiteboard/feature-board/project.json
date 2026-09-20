@@ -1,0 +1,13 @@
+{
+  "name": "whiteboard-feature-board",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/whiteboard/feature-board/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:whiteboard", "type:ui"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

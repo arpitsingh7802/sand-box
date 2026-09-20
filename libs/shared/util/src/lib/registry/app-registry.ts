@@ -2,11 +2,11 @@ import { AppManifest } from '@sand-box/types';
 
 export const ALL_APPS: AppManifest[] = [
   {
-    id: 'pixel-forge',
-    name: 'Pixel Forge',
-    tagline: 'Real-time image manipulation & WebGL canvas playground',
+    id: 'white-board-canvas',
+    name: 'White Canvas',
+    tagline: 'Infinite canvas playground',
     icon: '🎨',
-    path: '/sand-box/pixel-forge/',
+    path: '/#/board',
     category: 'tool',
     status: 'stable',
     tags: ['Canvas', 'Image', 'WebGL'],
