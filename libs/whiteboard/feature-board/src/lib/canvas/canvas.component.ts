@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { WhiteboardStore } from '@sand-box/whiteboard-data-access';
 import {
+  CircleShape,
   getHitHandle,
   getResizeHandles,
   getShapeBoundingBox,
@@ -184,6 +185,22 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
       };
       this.store.setDraftShape(newPen);
     }
+    if (activeTool === 'circle') {
+      this.dragMode = 'drawing';
+      this.startWorldPoint = worldPoint;
+      const newCircle: CircleShape = {
+        id: crypto.randomUUID(),
+        type: 'circle',
+        x: worldPoint.x,
+        y: worldPoint.y,
+        radius: 0,
+        strokeColor: this.store.selectedColor(),
+        strokeWidth: 2,
+        fillColor: 'rgba(59, 130, 246, 0.15)',
+      };
+      this.store.setDraftShape(newCircle);
+      return;
+    }
   }
 
   onMouseMove(event: MouseEvent): void {
@@ -198,22 +215,16 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
     const currentWorldPoint = screenToWorld(screenPoint, viewport);
 
     if (this.dragMode === 'moving' && this.lastWorldPoint) {
-      const selectedId = this.store.selectedShapeId();
-      if (selectedId) {
-        const deltaX = currentWorldPoint.x - this.lastWorldPoint.x;
-        const deltaY = currentWorldPoint.y - this.lastWorldPoint.y;
-        this.store.moveShape(selectedId, deltaX, deltaY);
-        this.lastWorldPoint = currentWorldPoint;
-      }
+      const deltaX = currentWorldPoint.x - this.lastWorldPoint.x;
+      const deltaY = currentWorldPoint.y - this.lastWorldPoint.y;
+      this.store.moveShape(deltaX, deltaY);
+      this.lastWorldPoint = currentWorldPoint;
       return;
     }
 
     if (this.dragMode === 'resizing' && this.activeHandle && this.lastWorldPoint) {
-      const selectedId = this.store.selectedShapeId();
-      if (selectedId) {
-        this.store.resizeShape(selectedId, this.activeHandle, currentWorldPoint);
-        this.lastWorldPoint = currentWorldPoint;
-      }
+      this.store.resizeShape(this.activeHandle, currentWorldPoint);
+      this.lastWorldPoint = currentWorldPoint;
       return;
     }
 
@@ -228,6 +239,17 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
           height: Math.abs(currentWorldPoint.y - this.startWorldPoint.y),
         };
         this.store.setDraftShape(updatedRect);
+      } else if (draft?.type === 'circle' && this.startWorldPoint) {
+        const dx = this.startWorldPoint.x - currentWorldPoint.x;
+        const dy = this.startWorldPoint.y - currentWorldPoint.y;
+
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        const updatedCircle: CircleShape = {
+          ...draft,
+          radius: distance,
+        };
+        this.store.setDraftShape(updatedCircle);
       } else if (draft?.type === 'pen') {
         const updatedPen: PenShape = {
           ...draft,
@@ -328,6 +350,26 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
       this.ctx.strokeStyle = shape.strokeColor;
       this.ctx.lineWidth = shape.strokeWidth * viewport.zoom;
       this.ctx.strokeRect(topLeft.x, topLeft.y, scaledWidth, scaledHeight);
+    } else if (shape.type === 'circle' && shape.radius > 0) {
+      // 1. Convert world center to screen coordinates
+      const screenCenter = worldToScreen({ x: shape.x, y: shape.y }, viewport);
+      // 2. Scale the radius by the viewport zoom
+      const scaledRadius = shape.radius * viewport.zoom;
+
+      // 3. Clear the previous path loop
+      this.ctx.beginPath();
+
+      // 4. Correct the radian parameter to 2 * Math.PI
+      this.ctx.arc(screenCenter.x, screenCenter.y, scaledRadius, 0, 2 * Math.PI);
+
+      if (shape.fillColor) {
+        this.ctx.fillStyle = shape.fillColor;
+        this.ctx.fill(); // Also call fill() if a fill color exists!
+      }
+
+      this.ctx.strokeStyle = shape.strokeColor;
+      this.ctx.lineWidth = shape.strokeWidth * viewport.zoom;
+      this.ctx.stroke();
     } else if (shape.type === 'pen' && shape.points.length > 0) {
       this.ctx.strokeStyle = shape.strokeColor;
       this.ctx.lineWidth = shape.strokeWidth * viewport.zoom;

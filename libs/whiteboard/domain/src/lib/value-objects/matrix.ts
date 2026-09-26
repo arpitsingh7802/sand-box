@@ -1,9 +1,5 @@
-import {
-  DEFAULT_ZOOM_LIMITS,
-  Point,
-  ViewportState,
-  ZoomLimits,
-} from '../models/viewport-state.model';
+import { Point } from '../models/shape/point.model';
+import { DEFAULT_ZOOM_LIMITS, ViewportState, ZoomLimits } from '../models/viewport-state.model';
 
 /**
  * Converts screen/pixel coordinates (e.g. mouse event offset) into world space coordinates.

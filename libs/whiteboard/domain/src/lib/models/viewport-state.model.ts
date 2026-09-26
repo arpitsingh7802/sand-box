@@ -1,8 +1,3 @@
-export interface Point {
-  x: number;
-  y: number;
-}
-
 export interface ViewportState {
   /** Offset X in screen coordinates */
   panX: number;

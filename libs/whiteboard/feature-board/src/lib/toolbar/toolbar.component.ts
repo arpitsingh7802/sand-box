@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { WhiteboardStore } from '@sand-box/whiteboard-data-access';
-import { ToolType } from '@sand-box/whiteboard-domain';
+import { Tool } from '@sand-box/whiteboard-domain';
 import { ColorPickerModule } from 'primeng/colorpicker';
 @Component({
   selector: 'lib-wb-toolbar',
@@ -52,14 +52,14 @@ export class ToolbarComponent {
       if (this.debouncedColor.status() === 'resolved') {
         const color = this.debouncedColor.value();
         this.store.setColorCode(color);
-        console.log(color);
       }
     });
   }
-  readonly tools: { id: ToolType; label: string; icon: string }[] = [
+  readonly tools: Tool[] = [
     { id: 'pan', label: 'Hand (Pan)', icon: '✋' },
     { id: 'select', label: 'Select', icon: '👆' },
     { id: 'rectangle', label: 'Rectangle', icon: '⬜' },
     { id: 'pen', label: 'Pen', icon: '✏️' },
+    { id: 'circle', label: 'Circle', icon: 'O' },
   ];
 }

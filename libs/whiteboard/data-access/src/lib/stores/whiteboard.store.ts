@@ -1,7 +1,9 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import {
   HandlePosition,
+  moveShape,
   Point,
+  resizeShape,
   Shape,
   ToolType,
   ViewportState,
@@ -100,75 +102,21 @@ export class WhiteboardStore {
     this.selectedShapeIdState.set(null);
   }
 
-  moveShape(shapeId: string, deltaWorldX: number, deltaWorldY: number): void {
+  moveShape(deltaWorldX: number, deltaWorldY: number): void {
     this.shapesState.update((shapes) =>
-      shapes.map((shape) => {
-        if (shape.id !== shapeId) return shape;
-
-        if (shape.type === 'rectangle') {
-          return {
-            ...shape,
-            x: shape.x + deltaWorldX,
-            y: shape.y + deltaWorldY,
-          };
-        }
-
-        if (shape.type === 'pen') {
-          return {
-            ...shape,
-            points: shape.points.map((p) => ({
-              x: p.x + deltaWorldX,
-              y: p.y + deltaWorldY,
-            })),
-          };
-        }
-
-        return shape;
-      }),
+      shapes.map((shape) =>
+        shape.id === this.selectedShapeId()
+          ? moveShape(shape, { x: deltaWorldX, y: deltaWorldY })
+          : shape,
+      ),
     );
   }
 
-  resizeShape(shapeId: string, handle: HandlePosition, currentWorldPoint: Point): void {
+  resizeShape(handle: HandlePosition, currentWorldPoint: Point): void {
     this.shapesState.update((shapes) =>
-      shapes.map((shape) => {
-        if (shape.id !== shapeId) return shape;
-
-        if (shape.type === 'rectangle') {
-          let x = shape.x;
-          let y = shape.y;
-          let width = shape.width;
-          let height = shape.height;
-
-          const right = x + width;
-          const bottom = y + height;
-
-          if (handle === 'br') {
-            width = Math.max(10, currentWorldPoint.x - x);
-            height = Math.max(10, currentWorldPoint.y - y);
-          } else if (handle === 'bl') {
-            const newX = Math.min(currentWorldPoint.x, right - 10);
-            width = right - newX;
-            x = newX;
-            height = Math.max(10, currentWorldPoint.y - y);
-          } else if (handle === 'tr') {
-            const newY = Math.min(currentWorldPoint.y, bottom - 10);
-            height = bottom - newY;
-            y = newY;
-            width = Math.max(10, currentWorldPoint.x - x);
-          } else if (handle === 'tl') {
-            const newX = Math.min(currentWorldPoint.x, right - 10);
-            const newY = Math.min(currentWorldPoint.y, bottom - 10);
-            width = right - newX;
-            height = bottom - newY;
-            x = newX;
-            y = newY;
-          }
-
-          return { ...shape, x, y, width, height };
-        }
-
-        return shape;
-      }),
+      shapes.map((shape) =>
+        shape.id === this.selectedShapeId() ? resizeShape(shape, handle, currentWorldPoint) : shape,
+      ),
     );
   }
 
