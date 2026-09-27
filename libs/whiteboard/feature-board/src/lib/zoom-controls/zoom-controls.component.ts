@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { WhiteboardStore } from '@sand-box/whiteboard-data-access';
+import { ViewportStore } from '@sand-box/whiteboard-data-access';
 
 @Component({
   selector: 'lib-wb-zoom-controls',
@@ -16,11 +16,11 @@ import { WhiteboardStore } from '@sand-box/whiteboard-data-access';
         -
       </button>
       <button
-        (click)="store.resetZoom()"
+        (click)="viewportStore.resetZoom()"
         class="font-mono min-w-[3rem] text-center hover:bg-neutral-800 px-2 py-1 rounded cursor-pointer transition-colors"
         title="Reset Zoom"
       >
-        {{ store.zoomPercentage() }}%
+        {{ viewportStore.zoomPercentage() }}%
       </button>
       <button
         (click)="zoomIn()"
@@ -33,15 +33,15 @@ import { WhiteboardStore } from '@sand-box/whiteboard-data-access';
   `,
 })
 export class ZoomControlsComponent {
-  readonly store = inject(WhiteboardStore);
+  readonly viewportStore = inject(ViewportStore);
 
   zoomIn(): void {
     const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    this.store.zoomAt(center, 1.2);
+    this.viewportStore.zoomAt(center, 1.2);
   }
 
   zoomOut(): void {
     const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    this.store.zoomAt(center, 0.8);
+    this.viewportStore.zoomAt(center, 0.8);
   }
 }

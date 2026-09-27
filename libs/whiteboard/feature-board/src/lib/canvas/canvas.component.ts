@@ -9,7 +9,7 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
-import { WhiteboardStore } from '@sand-box/whiteboard-data-access';
+import { ShapeStore, ToolStore, ViewportStore } from '@sand-box/whiteboard-data-access';
 import {
   CircleShape,
   getHitHandle,
@@ -34,9 +34,11 @@ type DragMode = 'none' | 'drawing' | 'moving' | 'resizing';
     <canvas
       #canvasRef
       class="w-full h-full block select-none"
-      [class.cursor-grab]="store.activeTool() === 'pan' && !store.isPanning()"
-      [class.cursor-grabbing]="store.activeTool() === 'pan' && store.isPanning()"
-      [class.cursor-crosshair]="store.activeTool() === 'rectangle' || store.activeTool() === 'pen'"
+      [class.cursor-grab]="toolStore.activeTool() === 'pan' && !viewportStore.isPanning()"
+      [class.cursor-grabbing]="toolStore.activeTool() === 'pan' && viewportStore.isPanning()"
+      [class.cursor-crosshair]="
+        toolStore.activeTool() === 'rectangle' || toolStore.activeTool() === 'pen'
+      "
       [class.cursor-move]="dragMode === 'moving'"
       (mousedown)="onMouseDown($event)"
       (mousemove)="onMouseMove($event)"
@@ -50,7 +52,10 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvasRef', { static: true })
   private canvasRef!: ElementRef<HTMLCanvasElement>;
 
-  readonly store = inject(WhiteboardStore);
+  readonly viewportStore = inject(ViewportStore);
+  readonly toolStore = inject(ToolStore);
+  readonly shapeStore = inject(ShapeStore);
+
   private ctx!: CanvasRenderingContext2D;
   private animationFrameId: number | null = null;
   private resizeObserver!: ResizeObserver;
@@ -63,10 +68,10 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
   constructor() {
     effect(() => {
       // Re-render when viewport, shapes, selection, or draft changes
-      this.store.viewport();
-      this.store.shapes();
-      this.store.selectedShapeId();
-      this.store.activeDraftShape();
+      this.viewportStore.viewport();
+      this.shapeStore.shapes();
+      this.shapeStore.selectedShapeId();
+      this.shapeStore.activeDraftShape();
       this.scheduleRender();
     });
   }
@@ -94,7 +99,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Delete' || event.key === 'Backspace') {
-      this.store.deleteSelectedShape();
+      this.shapeStore.deleteSelectedShape();
     }
   }
 
@@ -117,17 +122,17 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
   onMouseDown(event: MouseEvent): void {
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
     const screenPoint: Point = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    const viewport = this.store.viewport();
+    const viewport = this.viewportStore.viewport();
     const worldPoint = screenToWorld(screenPoint, viewport);
-    const activeTool = this.store.activeTool();
+    const activeTool = this.toolStore.activeTool();
 
     if (activeTool === 'pan' || event.button === 1) {
-      this.store.setIsPanning(true);
+      this.viewportStore.setIsPanning(true);
       return;
     }
 
     if (activeTool === 'select') {
-      const selectedShape = this.store.selectedShape();
+      const selectedShape = this.shapeStore.selectedShape();
 
       // 1. Check if clicking on a resize handle of currently selected shape
       if (selectedShape) {
@@ -141,15 +146,15 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
       }
 
       // 2. Check if clicking on an existing shape
-      const shapes = this.store.shapes();
+      const shapes = this.shapeStore.shapes();
       const hitShape = [...shapes].reverse().find((s) => isPointInShape(worldPoint, s));
 
       if (hitShape) {
-        this.store.selectShape(hitShape.id);
+        this.shapeStore.selectShape(hitShape.id);
         this.dragMode = 'moving';
         this.lastWorldPoint = worldPoint;
       } else {
-        this.store.clearSelection();
+        this.shapeStore.clearSelection();
         this.dragMode = 'none';
       }
       return;
@@ -166,11 +171,11 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
         y: worldPoint.y,
         width: 0,
         height: 0,
-        strokeColor: this.store.selectedColor(),
+        strokeColor: this.toolStore.strokeColor(),
         strokeWidth: 2,
-        fillColor: 'rgba(59, 130, 246, 0.15)',
+        fillColor: this.toolStore.fillColor(),
       };
-      this.store.setDraftShape(newRect);
+      this.shapeStore.setDraftShape(newRect);
       return;
     }
 
@@ -180,10 +185,10 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
         id: crypto.randomUUID(),
         type: 'pen',
         points: [worldPoint],
-        strokeColor: this.store.selectedColor(),
+        strokeColor: this.toolStore.strokeColor(),
         strokeWidth: 3,
       };
-      this.store.setDraftShape(newPen);
+      this.shapeStore.setDraftShape(newPen);
     }
     if (activeTool === 'circle') {
       this.dragMode = 'drawing';
@@ -194,42 +199,42 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
         x: worldPoint.x,
         y: worldPoint.y,
         radius: 0,
-        strokeColor: this.store.selectedColor(),
+        strokeColor: this.toolStore.strokeColor(),
         strokeWidth: 2,
-        fillColor: 'rgba(59, 130, 246, 0.15)',
+        fillColor: this.toolStore.fillColor(),
       };
-      this.store.setDraftShape(newCircle);
+      this.shapeStore.setDraftShape(newCircle);
       return;
     }
   }
 
   onMouseMove(event: MouseEvent): void {
-    if (this.store.isPanning()) {
-      this.store.panBy(event.movementX, event.movementY);
+    if (this.viewportStore.isPanning()) {
+      this.viewportStore.panBy(event.movementX, event.movementY);
       return;
     }
 
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
     const screenPoint: Point = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    const viewport = this.store.viewport();
+    const viewport = this.viewportStore.viewport();
     const currentWorldPoint = screenToWorld(screenPoint, viewport);
 
     if (this.dragMode === 'moving' && this.lastWorldPoint) {
       const deltaX = currentWorldPoint.x - this.lastWorldPoint.x;
       const deltaY = currentWorldPoint.y - this.lastWorldPoint.y;
-      this.store.moveShape(deltaX, deltaY);
+      this.shapeStore.moveShape(deltaX, deltaY);
       this.lastWorldPoint = currentWorldPoint;
       return;
     }
 
     if (this.dragMode === 'resizing' && this.activeHandle && this.lastWorldPoint) {
-      this.store.resizeShape(this.activeHandle, currentWorldPoint);
+      this.shapeStore.resizeShape(this.activeHandle, currentWorldPoint);
       this.lastWorldPoint = currentWorldPoint;
       return;
     }
 
     if (this.dragMode === 'drawing') {
-      const draft = this.store.activeDraftShape();
+      const draft = this.shapeStore.activeDraftShape();
       if (draft?.type === 'rectangle' && this.startWorldPoint) {
         const updatedRect: RectangleShape = {
           ...draft,
@@ -238,7 +243,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
           width: Math.abs(currentWorldPoint.x - this.startWorldPoint.x),
           height: Math.abs(currentWorldPoint.y - this.startWorldPoint.y),
         };
-        this.store.setDraftShape(updatedRect);
+        this.shapeStore.setDraftShape(updatedRect);
       } else if (draft?.type === 'circle' && this.startWorldPoint) {
         const dx = this.startWorldPoint.x - currentWorldPoint.x;
         const dy = this.startWorldPoint.y - currentWorldPoint.y;
@@ -249,24 +254,24 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
           ...draft,
           radius: distance,
         };
-        this.store.setDraftShape(updatedCircle);
+        this.shapeStore.setDraftShape(updatedCircle);
       } else if (draft?.type === 'pen') {
         const updatedPen: PenShape = {
           ...draft,
           points: [...draft.points, currentWorldPoint],
         };
-        this.store.setDraftShape(updatedPen);
+        this.shapeStore.setDraftShape(updatedPen);
       }
     }
   }
 
   onMouseUp(): void {
-    if (this.store.isPanning()) {
-      this.store.setIsPanning(false);
+    if (this.viewportStore.isPanning()) {
+      this.viewportStore.setIsPanning(false);
     }
 
     if (this.dragMode === 'drawing') {
-      this.store.commitDraftShape();
+      this.shapeStore.commitDraftShape();
     }
 
     this.dragMode = 'none';
@@ -284,7 +289,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
     };
 
     const zoomFactor = Math.pow(0.999, event.deltaY);
-    this.store.zoomAt(focalPoint, zoomFactor);
+    this.viewportStore.zoomAt(focalPoint, zoomFactor);
   }
 
   // --- Render Loop ---
@@ -300,7 +305,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
     if (!this.ctx) return;
 
     const canvas = this.canvasRef.nativeElement;
-    const viewport = this.store.viewport();
+    const viewport = this.viewportStore.viewport();
     const width = canvas.width / (window.devicePixelRatio || 1);
     const height = canvas.height / (window.devicePixelRatio || 1);
 
@@ -312,12 +317,12 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
     this.drawGrid(width, height, viewport);
 
     // Render Committed Shapes
-    for (const shape of this.store.shapes()) {
-      this.drawShape(shape, viewport, shape.id === this.store.selectedShapeId());
+    for (const shape of this.shapeStore.shapes()) {
+      this.drawShape(shape, viewport, shape.id === this.shapeStore.selectedShapeId());
     }
 
     // Render Draft Shape
-    const draft = this.store.activeDraftShape();
+    const draft = this.shapeStore.activeDraftShape();
     if (draft) {
       this.drawShape(draft, viewport, false);
     }
@@ -326,7 +331,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
     const origin = worldToScreen({ x: 0, y: 0 }, viewport);
     this.ctx.beginPath();
     this.ctx.arc(origin.x, origin.y, 5 * viewport.zoom, 0, Math.PI * 2);
-    this.ctx.fillStyle = this.store.selectedColor();
+    this.ctx.fillStyle = this.toolStore.strokeColor();
     this.ctx.fill();
   }
 

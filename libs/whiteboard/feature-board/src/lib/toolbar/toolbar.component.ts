@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { WhiteboardStore } from '@sand-box/whiteboard-data-access';
+import { ToolStore } from '@sand-box/whiteboard-data-access';
 import { Tool } from '@sand-box/whiteboard-domain';
 import { ColorPickerModule } from 'primeng/colorpicker';
 @Component({
@@ -21,9 +21,9 @@ import { ColorPickerModule } from 'primeng/colorpicker';
     >
       @for (item of tools; track item.id) {
         <button
-          (click)="store.setTool(item.id)"
-          [class.bg-neutral-700]="store.activeTool() === item.id"
-          [class.text-white]="store.activeTool() === item.id"
+          (click)="toolStore.setTool(item.id)"
+          [class.bg-neutral-700]="toolStore.activeTool() === item.id"
+          [class.text-white]="toolStore.activeTool() === item.id"
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors cursor-pointer"
           [title]="item.label"
         >
@@ -32,29 +32,25 @@ import { ColorPickerModule } from 'primeng/colorpicker';
         </button>
       }
       <div class="flex items-center gap-2">
-        <p-colorpicker name="color" [(ngModel)]="color" required inputId="cp-hex" />
-        <span>Color</span>
+        <p-colorpicker name="strokeColor" [(ngModel)]="strokeColor" required inputId="sp-hex" />
+        <span>Stroke</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <p-colorpicker name="fillColor" [(ngModel)]="fillColor" required inputId="fp-hex" />
+        <span>Fill</span>
       </div>
     </div>
   `,
 })
 export class ToolbarComponent {
-  readonly store = inject(WhiteboardStore);
-  color = signal<string>('#6466f1');
+  readonly toolStore = inject(ToolStore);
 
+  strokeColor = signal<string | null>(this.toolStore.strokeColor());
+  fillColor = signal<string | null>(this.toolStore.fillColor());
   // debounced() returns an ExperimentalPendingResult wrapper
-  private debouncedColor = debounced(this.color, 500);
+  private readonly debouncedStrokeColor = debounced(this.strokeColor, 500);
+  private readonly debouncedFillColor = debounced(this.strokeColor, 500);
 
-  constructor() {
-    // Effects must be placed in a construction context (constructor)
-    effect(() => {
-      // Check if the debounced value has resolved before updating the store
-      if (this.debouncedColor.status() === 'resolved') {
-        const color = this.debouncedColor.value();
-        this.store.setColorCode(color);
-      }
-    });
-  }
   readonly tools: Tool[] = [
     { id: 'pan', label: 'Hand (Pan)', icon: '✋' },
     { id: 'select', label: 'Select', icon: '👆' },
@@ -62,4 +58,29 @@ export class ToolbarComponent {
     { id: 'pen', label: 'Pen', icon: '✏️' },
     { id: 'circle', label: 'Circle', icon: 'O' },
   ];
+
+  constructor() {
+    this.setupStrokeColorSyncEffect();
+    this.setupFillColorSyncEffect();
+  }
+  private setupStrokeColorSyncEffect(): void {
+    effect(() => {
+      const status = this.debouncedStrokeColor.status();
+      const value = this.debouncedStrokeColor.value();
+
+      if (status === 'resolved' && value !== null) {
+        this.toolStore.setStrokeColor(value);
+      }
+    });
+  }
+  private setupFillColorSyncEffect(): void {
+    effect(() => {
+      const status = this.debouncedFillColor.status();
+      const value = this.debouncedFillColor.value();
+
+      if (status === 'resolved' && value !== null) {
+        this.toolStore.setFillColor(value);
+      }
+    });
+  }
 }
