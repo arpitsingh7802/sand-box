@@ -28,20 +28,20 @@ function _resizeRectangle(
   const right = x + width;
   const bottom = y + height;
 
-  if (handle === 'br') {
+  if (handle === 'se') {
     width = Math.max(10, currentWorldPoint.x - x);
     height = Math.max(10, currentWorldPoint.y - y);
-  } else if (handle === 'bl') {
+  } else if (handle === 'sw') {
     const newX = Math.min(currentWorldPoint.x, right - 10);
     width = right - newX;
     x = newX;
     height = Math.max(10, currentWorldPoint.y - y);
-  } else if (handle === 'tr') {
+  } else if (handle === 'ne') {
     const newY = Math.min(currentWorldPoint.y, bottom - 10);
     height = bottom - newY;
     y = newY;
     width = Math.max(10, currentWorldPoint.x - x);
-  } else if (handle === 'tl') {
+  } else if (handle === 'nw') {
     const newX = Math.min(currentWorldPoint.x, right - 10);
     const newY = Math.min(currentWorldPoint.y, bottom - 10);
     width = right - newX;
@@ -58,7 +58,13 @@ function _resizeCircle(
   handle: HandlePosition,
   currentWorldPoint: Point,
 ): CircleShape {
-  let radius = shape.radius;
-  radius = Math.max(10, currentWorldPoint.x - radius);
-  return { ...shape, radius };
+  const dx = currentWorldPoint.x - shape.x;
+  const dy = currentWorldPoint.y - shape.y;
+
+  const radius = Math.max(1, Math.sqrt(dx * dx + dy * dy));
+
+  return {
+    ...shape,
+    radius,
+  };
 }

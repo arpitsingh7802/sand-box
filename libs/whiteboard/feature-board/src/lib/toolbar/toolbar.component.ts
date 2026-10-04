@@ -1,86 +1,50 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  debounced,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToolStore } from '@sand-box/whiteboard-data-access';
-import { Tool } from '@sand-box/whiteboard-domain';
+import { TOOL_GROUPS } from '@sand-box/whiteboard-domain';
 import { ColorPickerModule } from 'primeng/colorpicker';
+import { StyleControlsComponent } from '../style-controls/style-controls.component';
 @Component({
   selector: 'lib-wb-toolbar',
-  imports: [CommonModule, ColorPickerModule, FormsModule],
+  imports: [CommonModule, ColorPickerModule, FormsModule, StyleControlsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="fixed top-6 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-neutral-900/90 border border-neutral-700/80 p-1.5 rounded-xl shadow-2xl backdrop-blur text-neutral-200 z-10"
+      class="
+        fixed top-6 left-1/2 -translate-x-1/2
+        flex flex-wrap items-center justify-center gap-1
+        max-w-[calc(100vw-2rem)]
+        bg-neutral-900/90 border border-neutral-700/80
+        p-1.5 rounded-xl shadow-2xl backdrop-blur
+        text-neutral-200 z-10
+        "
     >
-      @for (item of tools; track item.id) {
-        <button
-          (click)="toolStore.setTool(item.id)"
-          [class.bg-neutral-700]="toolStore.activeTool() === item.id"
-          [class.text-white]="toolStore.activeTool() === item.id"
-          class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors cursor-pointer"
-          [title]="item.label"
-        >
-          <span>{{ item.icon }}</span>
-          <span>{{ item.label }}</span>
-        </button>
+      @for (group of toolGroups; track group.id) {
+        <div class="flex items-center gap-1">
+          @for (tool of group.tools; track tool.id) {
+            <button
+              (click)="toolStore.setTool(tool.id)"
+              [class.bg-neutral-700]="toolStore.activeTool() === tool.id"
+              [class.text-white]="toolStore.activeTool() === tool.id"
+              class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors cursor-pointer"
+              [title]="tool.label"
+            >
+              <span>{{ tool.icon }}</span>
+              <span>{{ tool.label }}</span>
+            </button>
+          }
+        </div>
+
+        @if (!$last) {
+          <div class="h-6 w-px bg-neutral-700"></div>
+        }
       }
-      <div class="flex items-center gap-2">
-        <p-colorpicker name="strokeColor" [(ngModel)]="strokeColor" required inputId="sp-hex" />
-        <span>Stroke</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <p-colorpicker name="fillColor" [(ngModel)]="fillColor" required inputId="fp-hex" />
-        <span>Fill</span>
-      </div>
+      <lib-wb-style-controls></lib-wb-style-controls>
     </div>
   `,
 })
 export class ToolbarComponent {
   readonly toolStore = inject(ToolStore);
-
-  strokeColor = signal<string | null>(this.toolStore.strokeColor());
-  fillColor = signal<string | null>(this.toolStore.fillColor());
-  // debounced() returns an ExperimentalPendingResult wrapper
-  private readonly debouncedStrokeColor = debounced(this.strokeColor, 500);
-  private readonly debouncedFillColor = debounced(this.strokeColor, 500);
-
-  readonly tools: Tool[] = [
-    { id: 'pan', label: 'Hand (Pan)', icon: '✋' },
-    { id: 'select', label: 'Select', icon: '👆' },
-    { id: 'rectangle', label: 'Rectangle', icon: '⬜' },
-    { id: 'pen', label: 'Pen', icon: '✏️' },
-    { id: 'circle', label: 'Circle', icon: 'O' },
-  ];
-
-  constructor() {
-    this.setupStrokeColorSyncEffect();
-    this.setupFillColorSyncEffect();
-  }
-  private setupStrokeColorSyncEffect(): void {
-    effect(() => {
-      const status = this.debouncedStrokeColor.status();
-      const value = this.debouncedStrokeColor.value();
-
-      if (status === 'resolved' && value !== null) {
-        this.toolStore.setStrokeColor(value);
-      }
-    });
-  }
-  private setupFillColorSyncEffect(): void {
-    effect(() => {
-      const status = this.debouncedFillColor.status();
-      const value = this.debouncedFillColor.value();
-
-      if (status === 'resolved' && value !== null) {
-        this.toolStore.setFillColor(value);
-      }
-    });
-  }
+  readonly toolGroups = TOOL_GROUPS;
 }

@@ -1,4 +1,12 @@
-export type HandlePosition = 'tl' | 'tr' | 'bl' | 'br'; // Top-Left, Top-Right, Bottom-Left, Bottom-Right
+export type HandlePosition =
+  | 'n' // North (Top Mid)
+  | 's' // South (Bottom Mid)
+  | 'e' // East (Right Mid)
+  | 'w' // West (Left Mid)
+  | 'nw' // North-West (Top-Left Corner)
+  | 'ne' // North-East (Top-Right Corner)
+  | 'sw' // South-West (Bottom-Left Corner)
+  | 'se'; // South-East (Bottom-Right Corner)
 
 export interface BoundingBox {
   minX: number;

@@ -11,7 +11,11 @@ export * from './lib/models/geometry/resize-handles';
 export * from './lib/models/geometry/shape-movement';
 export * from './lib/models/geometry/shape-resizing';
 
-export * from './lib/models/tools.model';
+export * from './lib/models/tool/drawing-style.model';
+export * from './lib/models/tool/tool-definitions';
+export * from './lib/models/tool/tool-group-id.ts';
+export * from './lib/models/tool/tool-group.model';
+export * from './lib/models/tool/tool-type';
 export * from './lib/models/viewport-state.model';
 
 export * from './lib/value-objects/matrix';

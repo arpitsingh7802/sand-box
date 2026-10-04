@@ -17,7 +17,7 @@ export function getShapeBoundingBox(shape: Shape): BoundingBox {
       return _getCircleBoundingBox(shape);
   }
 }
-function _getPenBoundingBox(shape: PenShape) {
+function _getPenBoundingBox(shape: PenShape): BoundingBox {
   const xs = shape.points.map((p) => p.x);
   const ys = shape.points.map((p) => p.y);
   const minX = Math.min(...xs);
@@ -26,14 +26,14 @@ function _getPenBoundingBox(shape: PenShape) {
   const maxY = Math.max(...ys);
   return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
 }
-function _getRectangleBoundingBox(shape: RectangleShape) {
+function _getRectangleBoundingBox(shape: RectangleShape): BoundingBox {
   const minX = Math.min(shape.x, shape.x + shape.width);
   const maxX = Math.max(shape.x, shape.x + shape.width);
   const minY = Math.min(shape.y, shape.y + shape.height);
   const maxY = Math.max(shape.y, shape.y + shape.height);
   return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
 }
-function _getCircleBoundingBox(shape: CircleShape) {
+function _getCircleBoundingBox(shape: CircleShape): BoundingBox {
   const minX = shape.x - shape.radius;
   const maxX = shape.x + shape.radius;
   const minY = shape.y - shape.radius;

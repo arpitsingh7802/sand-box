@@ -171,10 +171,11 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
         y: worldPoint.y,
         width: 0,
         height: 0,
-        strokeColor: this.toolStore.strokeColor(),
+        strokeColor: this.toolStore.toolStyle().strokeColor,
         strokeWidth: 2,
-        fillColor: this.toolStore.fillColor(),
+        fillColor: this.toolStore.toolStyle().fillColor,
       };
+      console.log(newRect);
       this.shapeStore.setDraftShape(newRect);
       return;
     }
@@ -185,7 +186,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
         id: crypto.randomUUID(),
         type: 'pen',
         points: [worldPoint],
-        strokeColor: this.toolStore.strokeColor(),
+        strokeColor: this.toolStore.toolStyle().strokeColor,
         strokeWidth: 3,
       };
       this.shapeStore.setDraftShape(newPen);
@@ -199,9 +200,9 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
         x: worldPoint.x,
         y: worldPoint.y,
         radius: 0,
-        strokeColor: this.toolStore.strokeColor(),
+        strokeColor: this.toolStore.toolStyle().strokeColor,
         strokeWidth: 2,
-        fillColor: this.toolStore.fillColor(),
+        fillColor: this.toolStore.toolStyle().fillColor,
       };
       this.shapeStore.setDraftShape(newCircle);
       return;
@@ -331,7 +332,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
     const origin = worldToScreen({ x: 0, y: 0 }, viewport);
     this.ctx.beginPath();
     this.ctx.arc(origin.x, origin.y, 5 * viewport.zoom, 0, Math.PI * 2);
-    this.ctx.fillStyle = this.toolStore.strokeColor();
+    this.ctx.fillStyle = this.toolStore.toolStyle().strokeColor;
     this.ctx.fill();
   }
 
@@ -422,7 +423,7 @@ export class CanvasComponent implements AfterViewInit, OnDestroy {
     this.ctx.setLineDash([]);
 
     // Corner Handles (Only show resize handles for rectangles)
-    if (shape.type === 'rectangle') {
+    if (shape.type === 'rectangle' || shape.type === 'circle') {
       const handles = getResizeHandles(shape);
       const handleRadius = 5;
 
