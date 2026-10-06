@@ -1,4 +1,4 @@
-import { ShapeType } from './shape.model';
+import { ShapeType } from './shape.type';
 
 export interface BaseShape {
   id: string;
