@@ -1,8 +1,8 @@
-import { CircleShape } from '../shape/circle.model';
-import { PenShape } from '../shape/pen.model';
-import { Point } from '../shape/point.model';
-import { RectangleShape } from '../shape/rectangle.model';
-import { Shape } from '../shape/shape.model';
+import { CircleShape } from '../models/shape/circle.model';
+import { PenShape } from '../models/shape/pen.model';
+import { Point } from '../models/shape/point.model';
+import { RectangleShape } from '../models/shape/rectangle.model';
+import { Shape } from '../models/shape/shape.model';
 
 export function moveShape(shape: Shape, delta: Point): Shape {
   switch (shape.type) {

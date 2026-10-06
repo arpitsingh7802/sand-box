@@ -1,7 +1,8 @@
-import { Point } from '../shape/point.model';
-import { Shape } from '../shape/shape.model';
+import { BoundingBox } from '../models/geometry/bounding-box.model';
+import { HandlePosition } from '../models/geometry/handle-position.type';
+import { Point } from '../models/shape/point.model';
+import { Shape } from '../models/shape/shape.model';
 import { getShapeBoundingBox } from './bounding-box';
-import { BoundingBox, HandlePosition } from './interaction.model';
 
 /**
  * Gets the handles in world space for a selected shape's bounding box.

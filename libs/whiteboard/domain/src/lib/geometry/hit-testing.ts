@@ -1,9 +1,10 @@
-import { CircleShape } from '../shape/circle.model';
-import { PenShape } from '../shape/pen.model';
-import { Point } from '../shape/point.model';
-import { Shape } from '../shape/shape.model';
+import { BoundingBox } from '../models/geometry/bounding-box.model';
+import { HandlePosition } from '../models/geometry/handle-position.type';
+import { CircleShape } from '../models/shape/circle.model';
+import { PenShape } from '../models/shape/pen.model';
+import { Point } from '../models/shape/point.model';
+import { Shape } from '../models/shape/shape.model';
 import { getShapeBoundingBox } from './bounding-box';
-import { BoundingBox, HandlePosition } from './interaction.model';
 import { getResizeHandles } from './resize-handles';
 
 /**
